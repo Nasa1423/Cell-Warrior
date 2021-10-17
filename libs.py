@@ -1,7 +1,16 @@
+import random
+
 class GameField: #игровое поле, все, что его касается#
     def __init__(self, height, width):
         self.height, self.width = height, width
         self.cells = [[0 for _ in range(self.width)] for _ in range(self.height)]
+    def setSquare(self, x0, y0, w, h, value):
+        try:
+            for y in range(y0, y0 + h + 1):
+                self.cells[y][x0, x0 + w + 1] = [value for _ in range(w)]
+            return True
+        except ValueError:
+            return False
 
 
 class Bones:#кости

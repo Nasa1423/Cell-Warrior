@@ -1,6 +1,5 @@
 import random
 import pygame
-from libs import GameField, Bones
 import sys
 import os
 pygame.init()
