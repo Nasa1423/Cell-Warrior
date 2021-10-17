@@ -2,6 +2,7 @@ import random
 import pygame
 import sys
 import os
+from libs import GameField, Bones
 pygame.init()
 
 class Game:

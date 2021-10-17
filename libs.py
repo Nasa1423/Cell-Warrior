@@ -1,16 +1,32 @@
 import random
 
+class Square:
+    def __init__(self, x, y, w, h):
+        self.x, self.y, self.w, self.h = x, y, w, h
+
 class GameField: #игровое поле, все, что его касается#
     def __init__(self, height, width):
         self.height, self.width = height, width
         self.cells = [[0 for _ in range(self.width)] for _ in range(self.height)]
-    def setSquare(self, x0, y0, w, h, value):
+        self.squares = []
+    def addSquare(self, x, y, w, h, value):
+
         try:
-            for y in range(y0, y0 + h + 1):
-                self.cells[y][x0, x0 + w + 1] = [value for _ in range(w)]
+            for y in range(y, y + h + 1):
+                self.cells[y][x, x + w + 1] = [value for _ in range(w)]
             return True
         except ValueError:
             return False
+    def hasInterceptionAny(self, square):
+        for selSquare in self.squares:
+            if
+    def hasInterceptionSingle(self):
+
+    def getState(self, x, y):
+        try:
+            return self.cells[y][x]
+        except:
+            return None
 
 
 class Bones:#кости
