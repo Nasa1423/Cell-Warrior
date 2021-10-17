@@ -1,8 +1,8 @@
 import random
 import pygame
+from libs import *
 import sys
 import os
-from libs import GameField, Bones
 pygame.init()
 
 class Game:
