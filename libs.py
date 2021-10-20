@@ -25,14 +25,39 @@ class GameField: #игровое поле, все, что его касаетс�
                 return False
         else:
             return False
-    def getAvalablePositions(self, square):
+    def getAvalablePositions(self, square, playerNum):
         w, h = square.getSize()
         squares = []
-        for y in range(len(self.height - h)):
-            for x in range(len(self.width - w)):
-                if self.cells[y][x] == self.cells[y + h][x] == self.cells[y][x+w] == self.cells[y+h][x+w] == 0 and not self.hasInterceptionAny(square):
-                    squares.append(square)
+        preferredCells = []
+        hasField = False
+        for y in range(len(self.height)):
+            for x in range(len(self.width)):
+                if self.cells[y][x] == playerNum and not hasField:
+                    hasField = True
+                top = self.cells[y-1][x] if y > 0 else -1
+                bottom = self.cells[y + 1][x] if y < self.height - 1 else -1
+                left = self.cells[y][x-1] if x > 0 else -1
+                right = self.cells[y][x + 1] if y < self.width - 1 else -1
+                if playerNum in [top, bottom, left, right] and self.cells[y][x] == 0:
+                    preferredCells.append((x,y))
+        if not hasField:
+            squares.append(Square(self.width - 1 - w, self.height - 1 - h, self.width-1))
+            squares.append(Square(self.width - 1 - h, self.height - 1 - w, self.width-1))
+        else:
+            for x,y in preferredCells:
+                for iterY in range(y - h, y + h + 1, h * 2):
+                    for iterX in range(x - w, x + w + 1, w * 2):
+                        selSquare = Square(iterX, iterY, iterX + w, iterY + h)
+                        if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
+                            squares.append(selSquare)
+                for iterY in range(y - w, y + w + 1, w * 2):
+                    for iterX in range(x - h, x + h + 1, h * 2):
+                        selSquare = Square(iterX, iterY, iterX + h, iterY + w)
+                        if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
+                            squares.append(selSquare)
         return squares
+    def fittsInField(self, square):
+        return square.x >= 0 and square.x + square.w <= self.width - 1 and square.y >= 0 and square.y + square.h <= self.height - 1
     def hasInterceptionAny(self, square):
         for selSquare in self.squares:
             if self.hasInterceptionSingle(square, selSquare):
