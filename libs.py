@@ -3,6 +3,7 @@ import random
 class Square:
     def __init__(self, x, y, w, h, value):
         self.x, self.y, self.w, self.h = x, y, w, h
+        self.value = value
     def getCoords(self):
         return (self.x, self.y, self.x + self.w, self.y + self.h)
     def getSize(self):
@@ -17,27 +18,28 @@ class GameField: #игровое поле, все, что его касаетс�
         square = Square(x, y, w, h, value)
         if not self.hasInterceptionAny(square):
             try:
-                for y in range(y, y + h + 1):
-                    self.cells[y][x, x + w + 1] = [value for _ in range(w)]
+                for y in range(y, y + h):
+                    self.cells[y][x: x + w] = [value for _ in range(w)]
                 self.squares.append(square)
                 return True
             except ValueError:
                 return False
         else:
             return False
-    def getAvalablePositions(self, square, playerNum):
+    def getAvalablePositions(self, square):
         w, h = square.getSize()
+        playerNum = square.value
         squares = []
         preferredCells = []
         hasField = False
-        for y in range(len(self.height)):
-            for x in range(len(self.width)):
+        for y in range(self.height):
+            for x in range(self.width):
                 if self.cells[y][x] == playerNum and not hasField:
                     hasField = True
                 top = self.cells[y-1][x] if y > 0 else -1
                 bottom = self.cells[y + 1][x] if y < self.height - 1 else -1
                 left = self.cells[y][x-1] if x > 0 else -1
-                right = self.cells[y][x + 1] if y < self.width - 1 else -1
+                right = self.cells[y][x + 1] if x < self.width - 1 else -1
                 if playerNum in [top, bottom, left, right] and self.cells[y][x] == 0:
                     preferredCells.append((x,y))
         if not hasField:
@@ -47,12 +49,12 @@ class GameField: #игровое поле, все, что его касаетс�
             for x,y in preferredCells:
                 for iterY in range(y - h, y + h + 1, h * 2):
                     for iterX in range(x - w, x + w + 1, w * 2):
-                        selSquare = Square(iterX, iterY, iterX + w, iterY + h)
+                        selSquare = Square(iterX, iterY, iterX + w, iterY + h, playerNum)
                         if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
                             squares.append(selSquare)
                 for iterY in range(y - w, y + w + 1, w * 2):
                     for iterX in range(x - h, x + h + 1, h * 2):
-                        selSquare = Square(iterX, iterY, iterX + h, iterY + w)
+                        selSquare = Square(iterX, iterY, iterX + h, iterY + w, playerNum)
                         if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
                             squares.append(selSquare)
         return squares
