@@ -1,6 +1,7 @@
 import socketio
+import asyncio
 
-class Server:
+class Server: #Сервер, через который будет происходить взаимодействие между игроками
     def __init__(self):
 
         sio = socketio.AsyncServer()
@@ -14,8 +15,9 @@ class Server:
         async def disconnect(sid):
             print(sid, 'disconnected')
 
+        sio.emit('my event', {'data': 'foobar'})
 
-class Client:
+class Client: #Клиент (Игрок)
     def __init__(self):
 
         sio = socketio.AsyncClient()
@@ -27,3 +29,11 @@ class Client:
         @sio.on('*')
         async def catch_all(event, sid, data):
             pass
+
+        async def main():
+            await sio.connect('http://localhost:5000')
+            await sio.wait()
+
+        sio.emit('my message', {'foo': 'bar'})
+
+
