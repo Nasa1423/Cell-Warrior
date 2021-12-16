@@ -93,8 +93,8 @@ class GameField: #игровое поле, все, что его касаетс�
                 if playerNum in [top, bottom, left, right] and self.cells[y][x] == 0:
                     preferredCells.append((x,y))
         if not hasField:
-            squares.append(Square(self.width - 1 - w, self.height - 1 - h, self.width-1))
-            squares.append(Square(self.width - 1 - h, self.height - 1 - w, self.width-1))
+            squares.append(Square(self.width - 1 - w, self.height - 1 - h, w, h, 1))
+            squares.append(Square(self.width - 1 - h, self.height - 1 - w, w, h, 1))
         else:
             for x,y in preferredCells:
                 for iterY in range(y - h, y + h + 1, h * 2):
