@@ -109,15 +109,16 @@ class GameField:
             #             selSquare = Square(iterX, iterY, h, w, playerNum)
             #             if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
             #                 squares[1].append(selSquare)
-            for x, y in preferredCells:
-                selSquare = Square(x, y, w, h, playerNum)
-                if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
-                    if self.hasNeighbour(selSquare):
-                        squares[0].append(selSquare)
-                selSquare = Square(x, y, h, w, playerNum)
-                if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
-                    if self.hasNeighbour(selSquare):
-                        squares[1].append(selSquare)
+            for y in range(self.height):
+                for x in range(self.width):
+                    selSquare = Square(x, y, w, h, playerNum)
+                    if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
+                        if self.hasNeighbour(selSquare):
+                            squares[0].append(selSquare)
+                    selSquare = Square(x, y, h, w, playerNum)
+                    if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
+                        if self.hasNeighbour(selSquare):
+                            squares[1].append(selSquare)
         return squares
 
     def hasNeighbour(self, square:Square):
