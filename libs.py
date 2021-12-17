@@ -98,17 +98,24 @@ class GameField:
             squares[0].append(Square(self.width - 1 - w, self.height - 1 - h, w, h, 1))
             squares[1].append(Square(self.width - 1 - h, self.height - 1 - w, w, h, 1))
         else:
-            for x,y in preferredCells:
-                for iterY in range(y - w, y + w + 1, w * 2):
-                    for iterX in range(x - h, x + h + 1, h * 2):
-                        selSquare = Square(iterX, iterY, w, h, playerNum)
-                        if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
-                            squares[0].append(selSquare)
-                for iterY in range(y - w, y + w + 1, w * 2):
-                    for iterX in range(x - h, x + h + 1, h * 2):
-                        selSquare = Square(iterX, iterY, h, w, playerNum)
-                        if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
-                            squares[1].append(selSquare)
+            # for x,y in preferredCells:
+            #     for iterY in range(y - w, y + w + 1, w * 2):
+            #         for iterX in range(x - h, x + h + 1, h * 2):
+            #             selSquare = Square(iterX, iterY, w, h, playerNum)
+            #             if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
+            #                 squares[0].append(selSquare)
+            #     for iterY in range(y - w, y + w + 1, w * 2):
+            #         for iterX in range(x - h, x + h + 1, h * 2):
+            #             selSquare = Square(iterX, iterY, h, w, playerNum)
+            #             if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
+            #                 squares[1].append(selSquare)
+            for x, y in preferredCells:
+                selSquare = Square(x, y, w, h, playerNum)
+                if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
+                    squares[0].append(selSquare)
+                selSquare = Square(x, y, h, w, playerNum)
+                if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
+                    squares[1].append(selSquare)
         return squares
     def fittsInField(self, square:Square):
         """
