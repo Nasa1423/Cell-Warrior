@@ -174,12 +174,10 @@ class GameField:
         """
         ax1, ay1, ax2, ay2 = square1.getCoordsFixed()
         bx1, by1, bx2, by2 = square2.getCoordsFixed()
-
-        if max([ax1, ax2]) < min([bx1, bx2]) or max([ay1, ay2]) < min([by1, by2]) or min([ay1, ay2]) > max([by1, by2]):
+        if max([ax1, ax2]) < min([bx1, bx2]) or min([ax1, ax2]) > max([bx1, bx2]) or max([ay1, ay2]) < min([by1, by2]) or min([ay1, ay2]) > max([by1, by2]):
             return False
         else:
             return True
-
 
     def getState(self, x:int, y:int):
         """
@@ -219,8 +217,8 @@ class Bones:
         return self.boneA, self.boneB
 
 f = GameField(10, 10)
-f.addSquare(0,0,3,3,1)
-f.addSquare(2,2,2,2,1)
+#f.addSquare(0,0,3,3,1)
+#f.addSquare(3,2,2,2,1)
 # selsquare = Square(3,2,2,2,1)
 for el in f.cells:
     print(el)
