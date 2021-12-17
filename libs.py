@@ -109,8 +109,8 @@ class GameField:
             #             selSquare = Square(iterX, iterY, h, w, playerNum)
             #             if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
             #                 squares[1].append(selSquare)
-            for y in range(self.height):
-                for x in range(self.width):
+            for y in range(self.height - h):
+                for x in range(self.width - w):
                     selSquare = Square(x, y, w, h, playerNum)
                     if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
                         if self.hasNeighbour(selSquare):
@@ -123,14 +123,15 @@ class GameField:
 
     def hasNeighbour(self, square:Square):
         w,h = square.getSize()
-        for y in range(h):
-            for x in range(w):
+        for y in range(square.y, square.y+h+1):
+            for x in range(square.x, square.x+w+1):
                 if self.cells[y][x] == square.value and not hasField:
                     hasField = True
                 top = self.cells[y - 1][x] if y > 0 else -1
                 bottom = self.cells[y + 1][x] if y < self.height - 1 else -1
                 left = self.cells[y][x - 1] if x > 0 else -1
                 right = self.cells[y][x + 1] if x < self.width - 1 else -1
+                #print([top, bottom, left, right])
                 if square.value in [top, bottom, left, right] and self.cells[y][x] == 0:
                     return True
         return False
@@ -213,3 +214,11 @@ class Bones:
         """
         self.boneA, self.boneB = random.randint(1, 6), random.randint(1, 6)
         return self.boneA, self.boneB
+
+# f = GameField(10, 10)
+# f.addSquare(6,6,3,3,1)
+# #f.addSquare(3,2,4,4,1)
+# for el in f.cells:
+#     print(el)
+#
+# print(f.getAvalablePositions(Square(3,2,4,4,1)))
