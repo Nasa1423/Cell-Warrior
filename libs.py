@@ -24,6 +24,14 @@ class Square:
             Top left and bottom right points of self square (x1, y1, x2, y2)
         """
         return (self.x, self.y, self.x + self.w, self.y + self.h)
+    def getCoordsFixed(self):
+        """
+        Get coordinates of self Square
+
+        Returns:
+            Top left and bottom right points of self square (x1, y1, x2, y2)
+        """
+        return (self.x, self.y, self.x + self.w - 1, self.y + self.h - 1)
     def getSize(self):
         """
         Get size of self Square
@@ -95,19 +103,8 @@ class GameField:
                 squares[1].append(Square(self.width - 1 - h, self.height - 1 - w, w, h, playerNum))
             elif playerNum == 2:
                 squares[0].append(Square(0, 0, w, h, playerNum))
-                squares[1].append(Square(0, 0, w, h, playerNum))
+                squares[1].append(Square(0, 0, h, w, playerNum))
         else:
-            # for x,y in preferredCells:
-            #     for iterY in range(y - w, y + w + 1, w * 2):
-            #         for iterX in range(x - h, x + h + 1, h * 2):
-            #             selSquare = Square(iterX, iterY, w, h, playerNum)
-            #             if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
-            #                 squares[0].append(selSquare)
-            #     for iterY in range(y - w, y + w + 1, w * 2):
-            #         for iterX in range(x - h, x + h + 1, h * 2):
-            #             selSquare = Square(iterX, iterY, h, w, playerNum)
-            #             if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
-            #                 squares[1].append(selSquare)
             for y in range(self.height):
                 for x in range(self.width):
                     selSquare = Square(x, y, w, h, playerNum)
@@ -175,13 +172,14 @@ class GameField:
         Returns:
             Boolean, True if there is interception, False it there is not
         """
-        ax1, ay1, ax2, ay2 = square1.getCoords()
-        bx1, by1, bx2, by2 = square2.getCoords()
+        ax1, ay1, ax2, ay2 = square1.getCoordsFixed()
+        bx1, by1, bx2, by2 = square2.getCoordsFixed()
 
-        if max([ax1, ax2]) <= min([bx1, bx2]) or max([ay1, ay2]) <= min([by1, by2]) or min([ay1, ay2]) >= max([by1, by2]):
+        if max([ax1, ax2]) < min([bx1, bx2]) or max([ay1, ay2]) < min([by1, by2]) or min([ay1, ay2]) > max([by1, by2]):
             return False
         else:
             return True
+
 
     def getState(self, x:int, y:int):
         """
@@ -220,10 +218,11 @@ class Bones:
         self.boneA, self.boneB = random.randint(1, 6), random.randint(1, 6)
         return self.boneA, self.boneB
 
-# f = GameField(10, 10)
-# f.addSquare(6,6,3,3,1)
-# #f.addSquare(3,2,4,4,1)
-# for el in f.cells:
-#     print(el)
-#
-# print(f.getAvalablePositions(Square(3,2,4,4,1)))
+f = GameField(10, 10)
+f.addSquare(0,0,3,3,1)
+f.addSquare(2,2,2,2,1)
+# selsquare = Square(3,2,2,2,1)
+for el in f.cells:
+    print(el)
+# print(f.fittsInField(selsquare), f.hasInterceptionAny(selsquare), f.hasInterceptionSingle(f.squares[0], selsquare), f.hasNeighbour(selsquare))
+#print(f.getAvalablePositions(Square(3,2,4,4,1)))
