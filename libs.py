@@ -88,20 +88,14 @@ class GameField:
             for x in range(self.width):
                 if self.cells[y][x] == playerNum and not hasField:
                     hasField = True
-                top = self.cells[y-1][x] if y > 0 else -1
-                bottom = self.cells[y + 1][x] if y < self.height - 1 else -1
-                left = self.cells[y][x-1] if x > 0 else -1
-                right = self.cells[y][x + 1] if x < self.width - 1 else -1
-                if playerNum in [top, bottom, left, right] and self.cells[y][x] == 0:
-                    preferredCells.append((x,y))
+                    break
         if not hasField:
-            val = square.value
-            if val == 1:
-                squares[0].append(Square(self.width - 1 - w, self.height - 1 - h, w, h, val))
-                squares[1].append(Square(self.width - 1 - h, self.height - 1 - w, w, h, val))
-            elif val == 2:
-                squares[0].append(Square(0, 0, w, h, val))
-                squares[1].append(Square(0, 0, w, h, val))
+            if playerNum == 1:
+                squares[0].append(Square(self.width - 1 - w, self.height - 1 - h, w, h, playerNum))
+                squares[1].append(Square(self.width - 1 - h, self.height - 1 - w, w, h, playerNum))
+            elif playerNum == 2:
+                squares[0].append(Square(0, 0, w, h, playerNum))
+                squares[1].append(Square(0, 0, w, h, playerNum))
         else:
             # for x,y in preferredCells:
             #     for iterY in range(y - w, y + w + 1, w * 2):
@@ -114,8 +108,8 @@ class GameField:
             #             selSquare = Square(iterX, iterY, h, w, playerNum)
             #             if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
             #                 squares[1].append(selSquare)
-            for y in range(self.height - h):
-                for x in range(self.width - w):
+            for y in range(self.height):
+                for x in range(self.width):
                     selSquare = Square(x, y, w, h, playerNum)
                     if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
                         if self.hasNeighbour(selSquare):
@@ -138,8 +132,6 @@ class GameField:
         w,h = square.getSize()
         for y in range(square.y, square.y+h):
             for x in range(square.x, square.x+w):
-                if self.cells[y][x] == square.value and not hasField:
-                    hasField = True
                 top = self.cells[y - 1][x] if y > 0 else -1
                 bottom = self.cells[y + 1][x] if y < self.height - 1 else -1
                 left = self.cells[y][x - 1] if x > 0 else -1
