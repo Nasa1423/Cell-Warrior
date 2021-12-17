@@ -32,7 +32,7 @@ class Square:
         """
         return (self.w, self.h)
 
-class GameField: #игровое поле, все, что его касается#
+class GameField:
     """
     Main class of the game field, performs all calculations
 
@@ -173,7 +173,7 @@ class GameField: #игровое поле, все, что его касаетс�
             return None
 
 
-class Bones:#кости
+class Bones:
     """
     Emulates drop of two game bones, uses as randomizer
     """
@@ -181,10 +181,6 @@ class Bones:#кости
         self.boneA = random.randint(1, 6)
         self.boneB = random.randint(1, 6)
 
-    # method throw
-    #return:
-    #   self.boneA : Integer => Value of the first dropped bone
-    #   self.boneB : Integer => Value of the second dropped bone
     def throw(self):
         """
         Get 2 random numbers (emulates result of throwing two bones)
@@ -193,8 +189,3 @@ class Bones:#кости
         """
         self.boneA, self.boneB = random.randint(1, 6), random.randint(1, 6)
         return self.boneA, self.boneB
-#
-# field = GameField(25, 25)
-# print(field.getAvalablePositions(Square(2,2,2,2,1)))
-# field.addSquare(22,20,2,4,1)
-# print(field.getAvalablePositions(Square(2,2,2,2,1)))

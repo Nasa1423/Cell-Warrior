@@ -29,7 +29,6 @@ class Game:
         pygame.display.set_caption("Cell-Warrior")
         pygame.draw.rect(self.window, WHITE, (20, 20, 500, 500))
         self.size = 500 / width
-        # print(self.size)
         for horizon in range(1, width):
             first = 20 + horizon * (self.size)
             pygame.draw.line(self.window, BLACK, [first, 20], [first, 520])
@@ -79,11 +78,9 @@ class Game:
                             massive = []
                             coord_x, coord_y = 500, 500
                             minimum_dist = math.hypot(500, 500)
-                            # print(minimum_dist)
                             for posit in range(len(coordinates)):
                                 if math.hypot(x - coordinates[posit][0], y - coordinates[posit][1]) < minimum_dist:
                                     minimum_dist = math.hypot(x - coordinates[posit][0], y - coordinates[posit][1])
-                                    # print(minimum_dist)
                                     coord_x = coordinates[posit][0]
                                     coord_y = coordinates[posit][1]
                                     sel_positions = posit
@@ -96,7 +93,6 @@ class Game:
                             f = self.game_manager.addSquare(positions[sel_positions][0], positions[sel_positions][1], a, b, 1)
                             print(f)
                             return
-                            # pygame.draw.rect(self.window, GREEN, (x - 10, y - 10, 20, 20))
                 self.rect_dr.update()
                 self.rect_dr.draw(self.window)
                 pygame.display.flip()
