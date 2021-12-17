@@ -57,7 +57,7 @@ class GameField: #игровое поле, все, что его касаетс�
             None
         """
         square = Square(x, y, w, h, value)
-        if not self.hasInterceptionAny(square):
+        if not self.hasInterceptionAny(square) and self.fittsInField(Square(x,y,w,h,1)):
             try:
                 for y in range(y, y + h):
                     self.cells[y][x: x + w] = [value for _ in range(w)]
