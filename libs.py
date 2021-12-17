@@ -54,10 +54,10 @@ class GameField: #игровое поле, все, что его касаетс�
             value: value of self square, defines belonging to the specific player
 
         Returns:
-            None
+            True if creation was successfull, False if not
         """
         square = Square(x, y, w, h, value)
-        if not self.hasInterceptionAny(square) and self.fittsInField(Square(x,y,w,h,1)):
+        if not self.hasInterceptionAny(square) and self.fittsInField(square):
             try:
                 for y in range(y, y + h):
                     self.cells[y][x: x + w] = [value for _ in range(w)]
@@ -97,14 +97,16 @@ class GameField: #игровое поле, все, что его касаетс�
             squares[1].append(Square(self.width - 1 - h, self.height - 1 - w, w, h, 1))
         else:
             for x,y in preferredCells:
-                for iterY in range(y - h, y + h + 1, h * 2):
-                    for iterX in range(x - w, x + w + 1, w * 2):
-                        selSquare = Square(iterX, iterY, iterX + w, iterY + h, playerNum)
+                for iterY in range(y - w, y + w + 1, w * 2):
+                    for iterX in range(x - h, x + h + 1, h * 2):
+                        selSquare = Square(iterX, iterY, w, h, playerNum)
+                        #print(self.fittsInField(selSquare), selSquare.getCoords(), self.hasInterceptionAny(selSquare))
                         if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
                             squares[0].append(selSquare)
                 for iterY in range(y - w, y + w + 1, w * 2):
                     for iterX in range(x - h, x + h + 1, h * 2):
-                        selSquare = Square(iterX, iterY, iterX + h, iterY + w, playerNum)
+                        selSquare = Square(iterX, iterY, h, w, playerNum)
+                        #print(self.fittsInField(selSquare), selSquare.getCoords(), self.hasInterceptionAny(selSquare))
                         if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
                             squares[1].append(selSquare)
         return squares
@@ -191,5 +193,8 @@ class Bones:#кости
         """
         self.boneA, self.boneB = random.randint(1, 6), random.randint(1, 6)
         return self.boneA, self.boneB
-
-#field = GameField(50, 50)
+#
+# field = GameField(25, 25)
+# print(field.getAvalablePositions(Square(2,2,2,2,1)))
+# field.addSquare(22,20,2,4,1)
+# print(field.getAvalablePositions(Square(2,2,2,2,1)))
