@@ -95,8 +95,13 @@ class GameField:
                 if playerNum in [top, bottom, left, right] and self.cells[y][x] == 0:
                     preferredCells.append((x,y))
         if not hasField:
-            squares[0].append(Square(self.width - 1 - w, self.height - 1 - h, w, h, 1))
-            squares[1].append(Square(self.width - 1 - h, self.height - 1 - w, w, h, 1))
+            val = square.value
+            if val == 1:
+                squares[0].append(Square(self.width - 1 - w, self.height - 1 - h, w, h, val))
+                squares[1].append(Square(self.width - 1 - h, self.height - 1 - w, w, h, val))
+            elif val == 2:
+                squares[0].append(Square(0, 0, w, h, val))
+                squares[1].append(Square(0, 0, w, h, val))
         else:
             # for x,y in preferredCells:
             #     for iterY in range(y - w, y + w + 1, w * 2):
@@ -122,6 +127,14 @@ class GameField:
         return squares
 
     def hasNeighbour(self, square:Square):
+        """
+        Detects if this square has neighbour cell with the same value (square touches its owners piece of field)
+        Args:
+            square: selected square
+
+        Returns:
+            True if has, False if not
+        """
         w,h = square.getSize()
         for y in range(square.y, square.y+h):
             for x in range(square.x, square.x+w):
