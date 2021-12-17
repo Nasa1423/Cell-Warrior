@@ -112,11 +112,27 @@ class GameField:
             for x, y in preferredCells:
                 selSquare = Square(x, y, w, h, playerNum)
                 if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
-                    squares[0].append(selSquare)
+                    if self.hasNeighbour(selSquare):
+                        squares[0].append(selSquare)
                 selSquare = Square(x, y, h, w, playerNum)
                 if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
-                    squares[1].append(selSquare)
+                    if self.hasNeighbour(selSquare):
+                        squares[1].append(selSquare)
         return squares
+
+    def hasNeighbour(self, square:Square):
+        w,h = square.getSize()
+        for y in range(h):
+            for x in range(w):
+                if self.cells[y][x] == square.value and not hasField:
+                    hasField = True
+                top = self.cells[y - 1][x] if y > 0 else -1
+                bottom = self.cells[y + 1][x] if y < self.height - 1 else -1
+                left = self.cells[y][x - 1] if x > 0 else -1
+                right = self.cells[y][x + 1] if x < self.width - 1 else -1
+                if square.value in [top, bottom, left, right] and self.cells[y][x] == 0:
+                    return True
+        return False
     def fittsInField(self, square:Square):
         """
         Calculates if selected square can fit in the GameField by the size
