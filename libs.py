@@ -100,8 +100,8 @@ class GameField:
                 squares[0].append(Square(self.width - 1 - w, self.height - 1 - h, w, h, val))
                 squares[1].append(Square(self.width - 1 - h, self.height - 1 - w, w, h, val))
             elif val == 2:
-                squares[0].append(Square(-1, -1, w, h, val))
-                squares[1].append(Square(-1, -1, w, h, val))
+                squares[0].append(Square(0, 0, w, h, val))
+                squares[1].append(Square(0, 0, w, h, val))
         else:
             # for x,y in preferredCells:
             #     for iterY in range(y - w, y + w + 1, w * 2):
