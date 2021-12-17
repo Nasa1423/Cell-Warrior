@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import random
 
 class Square:
@@ -100,13 +102,11 @@ class GameField: #игровое поле, все, что его касаетс�
                 for iterY in range(y - w, y + w + 1, w * 2):
                     for iterX in range(x - h, x + h + 1, h * 2):
                         selSquare = Square(iterX, iterY, w, h, playerNum)
-                        #print(self.fittsInField(selSquare), selSquare.getCoords(), self.hasInterceptionAny(selSquare))
                         if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
                             squares[0].append(selSquare)
                 for iterY in range(y - w, y + w + 1, w * 2):
                     for iterX in range(x - h, x + h + 1, h * 2):
                         selSquare = Square(iterX, iterY, h, w, playerNum)
-                        #print(self.fittsInField(selSquare), selSquare.getCoords(), self.hasInterceptionAny(selSquare))
                         if self.fittsInField(selSquare) and not self.hasInterceptionAny(selSquare):
                             squares[1].append(selSquare)
         return squares

@@ -53,7 +53,7 @@ class Game:
         Function is responsible for drawing the rectangle.
 
         Returns:
-            None
+
         """
         a, b = self.bones.throw()
         x, y = 0, 0
