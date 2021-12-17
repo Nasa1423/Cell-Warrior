@@ -123,8 +123,8 @@ class GameField:
 
     def hasNeighbour(self, square:Square):
         w,h = square.getSize()
-        for y in range(square.y, square.y+h+1):
-            for x in range(square.x, square.x+w+1):
+        for y in range(square.y, square.y+h):
+            for x in range(square.x, square.x+w):
                 if self.cells[y][x] == square.value and not hasField:
                     hasField = True
                 top = self.cells[y - 1][x] if y > 0 else -1
