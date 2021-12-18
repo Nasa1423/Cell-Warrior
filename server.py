@@ -20,7 +20,8 @@ class Server: #Сервер, через который будет происхо
 class Client: #Клиент (Игрок)
     def __init__(self):
 
-        sio = socketio.AsyncClient()
+        #sio = socketio.AsyncClient()
+        sio = socketio.Client()
 
         @sio.event
         async def message(data):
@@ -37,3 +38,4 @@ class Client: #Клиент (Игрок)
         sio.emit('my message', {'foo': 'bar'})
 
 
+c = Client()
