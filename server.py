@@ -1,39 +1,71 @@
+# -*- coding: utf-8 -*-
 import socketio
 import asyncio
 
-class Server: #Сервер, через который будет происходить взаимодействие между игроками
-    def __init__(self):
+class Server:
+    """
+    Сервер, через который будет происходить взаимодействие между игроками. Принимает ивенты от Клиентов.
 
+    """
+
+    def __init__(self):
         sio = socketio.AsyncServer()
-        app = socketio.ASGIApp(sio)
+        self.connected = False
+        self.uid = ''
+
 
         @sio.event
-        async def connect(sid, environ):
-            print(sid, 'connected')
+        def connect(sid, environ):
+            if not self.connected:
+                self.connected = True
+                self.uid = sid
 
         @sio.event
-        async def disconnect(sid):
-            print(sid, 'disconnected')
+        async def get_message(sid, data):
+            print("message ", data)
 
-        sio.emit('my event', {'data': 'foobar'})
+        @sio.event
+        def disconnect(sid):
+            self.connected = False
+            self.uid = ''
 
-class Client: #Клиент (Игрок)
+        if __name__ == '__main__':
+            web.run_app(app)
+
+
+
+
+  #      sio.emit('my event', {'data': 'foobar'})
+
+class Client:
+    """
+    Класс Клиента (игрока), отправляет ивенты на Сервер
+
+    """
     def __init__(self):
 
-        sio = socketio.AsyncClient()
 
-        @sio.event
-        async def message(data):
-            print('recieved')
+        self.sio = socketio.AsyncClient()
 
-        @sio.on('*')
-        async def catch_all(event, sid, data):
-            pass
+        @self.sio.event
+        async def connect(ip, port):
+            print('connection established')
 
-        async def main():
-            await sio.connect('http://localhost:5000')
-            await sio.wait()
 
-        sio.emit('my message', {'foo': 'bar'})
+        @self.sio.event
+        async def my_message(data):
+            print('message received with ', data)
+            await self.sio.emit('my response', {'response': 'my response'})
 
+        @self.sio.event
+        async def get_message(message):
+            print(message['message'])
+
+        @self.sio.event
+        async def disconnect(ip, port):
+            print('disconnected from server')
+
+    def connectToServer(self, ip, port):
+        self.sio.connect(f'http://{ip}:{port}')
+        self.sio.wait()
 
