@@ -4,12 +4,16 @@ import socket
 class Server:
     """
     Сервер, через который будет происходить взаимодействие между игроками.
+
     """
     def __init__(self):
         self.server = socket.socket(
+
             socket.AF_INET,
             socket.SOCK_STREAM
+
         )
+
         self.server.bind(('', 8910))
         self.retrieveConnection()
 
@@ -18,6 +22,7 @@ class Server:
         Осуществляет подключение, слушает клиента.
         Returns:
             None
+
         """
         self.players = []
         self.server.listen(2)
@@ -30,6 +35,7 @@ class Server:
         Получает от клиента информацию.
         Returns:
             Данные, полученные от клиента.
+
         """
         data = ''
 
@@ -47,6 +53,7 @@ class Server:
 
         Returns:
             None
+
         """
         for player in self.players:
             data = data.encode('utf-8')
@@ -55,11 +62,14 @@ class Server:
 class Client:
     """
     Клиент (игрок), который будет принимать и посылать информацию на сервер.
+
     """
     def __init__(self, ip, port):
         self.client = socket.socket(
+
             socket.AF_INET,
             socket.SOCK_STREAM
+
         )
         self.client.settimeout(10)
         self.client.connect((ip, port))
@@ -70,6 +80,7 @@ class Client:
         Получает от сервера информацию.
         Returns:
             Получанная с сервера информация.
+
         """
 
         data = self.client.recv(2048)
@@ -84,6 +95,7 @@ class Client:
 
         Returns:
             None
+
         """
         data = data.encode('utf-8')
         self.client.send(data)
