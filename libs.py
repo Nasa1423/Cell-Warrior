@@ -49,7 +49,7 @@ class GameField:
         width: width of field
     """
     def __init__(self, height:int, width:int):
-        self.height, self.width = height, width
+        self.height, self.width = height + 1, width + 1
         self.cells = [[0 for _ in range(self.width)] for _ in range(self.height)]
         self.squares = []
     def addSquare(self, x:int, y:int, w:int, h:int, value:int):
@@ -216,7 +216,7 @@ class Bones:
         self.boneA, self.boneB = random.randint(1, 6), random.randint(1, 6)
         return self.boneA, self.boneB
 
-f = GameField(10, 10)
+f = GameField(20, 20)
 #f.addSquare(0,0,3,3,1)
 #f.addSquare(3,2,2,2,1)
 # selsquare = Square(3,2,2,2,1)
