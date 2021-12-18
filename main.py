@@ -65,10 +65,14 @@ class Game:
                 self.turn()
                 self.turn_num = 2 if self.turn_num == 1 else 1
             else:
-                if server and self.turn_num == 1:
-                    self.turn()
-                else:
+                if not(server) and self.turn_num == 1:
                     self.turn_2()
+                elif server and self.turn_num == 2:
+                    self.turn_2()
+                elif server and self.turn_num == 1:
+                    self.turn()
+                elif not(server) and self.turn_num == 2:
+                    self.turn()
                 self.turn_num = 2 if self.turn_num == 1 else 1
 
         if self.summ1 > self.summ2:
@@ -127,6 +131,8 @@ class Game:
                                 self.sock.send("/".join([str(positions[sel_positions][0]), str(positions[sel_positions][1]), str(a), str(b), str(self.turn_num)]))
                             self.summ1 += a * b
                         elif self.turn_num == 2:
+                            if self.online and not(self.server):
+                                self.sock.send("/".join([str(positions[sel_positions][0]), str(positions[sel_positions][1]), str(a), str(b), str(self.turn_num)]))
                             self.summ2 += a * b
                         return
                 self.rect_dr.update()
@@ -134,9 +140,21 @@ class Game:
                 pygame.display.flip()
 
     def turn_2(self):
-        posits = self.sock.recieve().split("/")
+        """
+        Move function for remote player.
+        Returns:
+            None
+        """
+        posits = self.sock.recieve()
+        print(posits)
+        posits = list(map(int, posits.split("/")))
+        print(posits)
         self.game_manager.addSquare(int(posits[0]), int(posits[1]), int(posits[2]), int(posits[3]), int(posits[4]))
         self.window.fill(BLACK)
+        self.rect = Rect_drawing(self.size * posits[2], self.size * posits[3], GREEN) if self.turn_num == 1 else Rect_drawing(
+            self.size * posits[2], self.size * posits[3], PINK)
+        self.rect.control((posits[0] + 1) * self.size + (posits[2] * self.size) / 2, (posits[1] + 1) * self.size + (posits[3] * self.size) / 2)
+        self.rect_dr.add(self.rect)
         self.rect_dr.update()
         self.rect_dr.draw(self.window)
         pygame.display.flip()
@@ -203,7 +221,7 @@ if answer == "Да":
     print("Вы хотите быть клиентом или сервером? 1 - клиент, 2 - сервер.")
     player = int(input())
     if player == 1:
-        sock = Client("localhost", 8910)
+        sock = Client("localhost", 8911)
         test = Game(25, online=True, sock=sock)
     elif player == 2:
         sock = Server()

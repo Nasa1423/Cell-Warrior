@@ -14,7 +14,7 @@ class Server:
 
         )
 
-        self.server.bind(('', 8910))
+        self.server.bind(('', 8911))
         self.retrieveConnection()
 
     def retrieveConnection(self):
