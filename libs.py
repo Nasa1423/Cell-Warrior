@@ -49,7 +49,7 @@ class GameField:
         width: width of field
     """
     def __init__(self, height:int, width:int):
-        self.height, self.width = height, width
+        self.height, self.width = height + 1, width + 1
         self.cells = [[0 for _ in range(self.width)] for _ in range(self.height)]
         self.squares = []
     def addSquare(self, x:int, y:int, w:int, h:int, value:int):
@@ -133,7 +133,6 @@ class GameField:
                 bottom = self.cells[y + 1][x] if y < self.height - 1 else -1
                 left = self.cells[y][x - 1] if x > 0 else -1
                 right = self.cells[y][x + 1] if x < self.width - 1 else -1
-                #print([top, bottom, left, right])
                 if square.value in [top, bottom, left, right] and self.cells[y][x] == 0:
                     return True
         return False
@@ -215,12 +214,3 @@ class Bones:
         """
         self.boneA, self.boneB = random.randint(1, 6), random.randint(1, 6)
         return self.boneA, self.boneB
-
-f = GameField(10, 10)
-#f.addSquare(0,0,3,3,1)
-#f.addSquare(3,2,2,2,1)
-# selsquare = Square(3,2,2,2,1)
-for el in f.cells:
-    print(el)
-# print(f.fittsInField(selsquare), f.hasInterceptionAny(selsquare), f.hasInterceptionSingle(f.squares[0], selsquare), f.hasNeighbour(selsquare))
-#print(f.getAvalablePositions(Square(3,2,4,4,1)))
