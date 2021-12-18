@@ -24,11 +24,9 @@ class Server:
             None
 
         """
-        self.players = []
         self.server.listen(2)
         self.cliSock, self.cliAddr = self.server.accept()
         print(f'Игрок {self.cliSock} подключен')
-        self.players.append(self.cliSock)
 
     def recieve(self):
         """
