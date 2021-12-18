@@ -5,6 +5,7 @@ from libs import *
 import sys
 import math
 from pygame.mouse import *
+from server import *
 import os
 
 
@@ -19,13 +20,21 @@ PINK = (230, 50, 230)
 
 class Game:
 
-    def __init__(self, width):
+    def __init__(self, width, online=False, server=False, sock=None):
         """
         Class Game responsible for drawing the field.
 
         Args:
             width: the number of cells on the playing field.
         """
+        self.sock = sock
+        self.online = online
+        self.server = server
+        if online:
+            if server == True:
+                sock.send(str(width))
+            else:
+                width = int(sock.recieve())
         pygame.init()
         self.window = pygame.display.set_mode((1280, 720))
         self.window.fill(BLACK)
@@ -52,18 +61,26 @@ class Game:
         self.summ2 = 0
         self.failed = 0
         while self.failed < 2:
-            self.turn()
-            self.turn_num = 2 if self.turn_num == 1 else 1
+            if online == False:
+                self.turn()
+                self.turn_num = 2 if self.turn_num == 1 else 1
+            else:
+                if server and self.turn_num == 1:
+                    self.turn()
+                else:
+                    self.turn_2()
+                self.turn_num = 2 if self.turn_num == 1 else 1
+
         if self.summ1 > self.summ2:
-            print("First player is winner!")
+            print(f"First player is winner! {self.summ1} vs {self.summ2}")
         elif self.summ1 < self.summ2:
-            print("Second player is winner!")
+            print(f"Second player is winner! {self.summ1} vs {self.summ2}")
         else:
             print("DRAW!")
 
     def turn(self):
         """
-        Function is responsible for drawing the rectangle.
+        Function is responsible for calculating the moves of the players.
 
         Returns:
             None
@@ -72,7 +89,6 @@ class Game:
         x, y = 0, 0
         positions = self.game_manager.getAvalablePositions(Square(x, y, a, b, self.turn_num))
         positions = [x.getCoords() for x in positions[0]]
-        print(positions)
         coordinates = [[((w - x) / 2 + x + 1) * self.size, ((h - y) / 2 + y + 1) * self.size] for x, y, w, h in positions]
         if coordinates == []:
             self.failed += 1
@@ -103,20 +119,28 @@ class Game:
                             self.rect.control(coord_x, coord_y)
                             self.rect.update()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    self.summ1 = 0
-                    self.summ2 = 0
-                    if 520 > x > 20 and 20 < y < 520:
-                        self.window.fill(BLACK)
-                        if pygame.mouse.get_focused():
-                            self.game_manager.addSquare(positions[sel_positions][0], positions[sel_positions][1], a, b, self.turn_num)
-                            if self.turn_num == 1:
-                                self.summ1 += a * b
-                            elif self.turn_num == 2:
-                                self.summ2 += a * b
-                            return
+                    self.window.fill(BLACK)
+                    if pygame.mouse.get_focused():
+                        self.game_manager.addSquare(positions[sel_positions][0], positions[sel_positions][1], a, b, self.turn_num)
+                        if self.turn_num == 1:
+                            if self.online and self.server:
+                                self.sock.send("/".join([str(positions[sel_positions][0]), str(positions[sel_positions][1]), str(a), str(b), str(self.turn_num)]))
+                            self.summ1 += a * b
+                        elif self.turn_num == 2:
+                            self.summ2 += a * b
+                        return
                 self.rect_dr.update()
                 self.rect_dr.draw(self.window)
                 pygame.display.flip()
+
+    def turn_2(self):
+        posits = self.sock.recieve().split("/")
+        self.game_manager.addSquare(int(posits[0]), int(posits[1]), int(posits[2]), int(posits[3]), int(posits[4]))
+        self.window.fill(BLACK)
+        self.rect_dr.update()
+        self.rect_dr.draw(self.window)
+        pygame.display.flip()
+
 
 
 class FieldImage(pygame.sprite.Sprite):
@@ -173,5 +197,17 @@ class Rect_drawing(pygame.sprite.Sprite):
         """
         self.rect.center = (self.movex, self.movey)
 
-
-test = Game(10)
+print("Вы хотите играть по сети?")
+answer = input()
+if answer == "Да":
+    print("Вы хотите быть клиентом или сервером? 1 - клиент, 2 - сервер.")
+    player = int(input())
+    if player == 1:
+        sock = Client("localhost", 8910)
+        test = Game(25, online=True, sock=sock)
+    elif player == 2:
+        sock = Server()
+        print("Игрок подключился.")
+        test = Game(25, online=True, server=True, sock=sock)
+else:
+    test = Game(25)
