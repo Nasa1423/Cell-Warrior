@@ -32,14 +32,12 @@ class Server:
             Данные, полученные от клиента.
         """
         data = ''
-        while True:
-            inp = self.cliSock.recv(1024)
-            inp = inp.decode('utf-8')
-            data += inp
 
-            if not data:
-                break
-            return data
+        inp = self.cliSock.recv(1024)
+        inp = inp.decode('utf-8')
+        data += inp
+
+        return data
 
     def send(self, data):
         """
@@ -73,10 +71,10 @@ class Client:
         Returns:
             Получанная с сервера информация.
         """
-        while True:
-            data = self.client.recv(2048)
-            data = data.decode('utf-8')
-            return data
+
+        data = self.client.recv(2048)
+        data = data.decode('utf-8')
+        return data
 
     def send(self, data):
         """
