@@ -19,11 +19,11 @@ class Server:
         Returns:
             None
         """
-
+        self.players = []
         self.server.listen(2)
         self.cliSock, self.cliAddr = self.server.accept()
-        self.cliSock.send('Вы подключены!'.encode('utf-8'))
         print(f'Игрок {self.cliSock} подключен')
+        self.players.append(self.cliSock)
 
     def recieve(self):
         """
@@ -50,21 +50,21 @@ class Server:
         Returns:
             None
         """
-        data = data.encode('utf-8')
-        self.cliSocket.send(data)
-
+        for player in self.players:
+            data = data.encode('utf-8')
+            player.send(data)
 
 class Client:
     """
     Клиент (игрок), который будет принимать и посылать информацию на сервер.
     """
-    def __init__(self):
+    def __init__(self, ip, port):
         self.client = socket.socket(
             socket.AF_INET,
             socket.SOCK_STREAM
         )
         self.client.settimeout(10)
-        self.client.connect(('localhost', 8910))
+        self.client.connect((ip, port))
         self.client.settimeout(None)
 
     def recieve(self):
