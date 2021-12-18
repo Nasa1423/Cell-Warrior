@@ -1,71 +1,80 @@
 # -*- coding: utf-8 -*-
-import socketio
-import asyncio
+import socket
 
 class Server:
     """
-    Сервер, через который будет происходить взаимодействие между игроками. Принимает ивенты от Клиентов.
-
+    Сервер, через который будет происходить взаимодействие между игроками.
     """
-
     def __init__(self):
-        sio = socketio.AsyncServer()
-        self.connected = False
-        self.uid = ''
+        self.server = socket.socket(
+            socket.AF_INET,
+            socket.SOCK_STREAM
+        )
+        self.server.bind(('', 8910))
+        self.retrieveConnection()
 
+    def retrieveConnection(self):
+        """
+        Осуществляет подключение, слушает клиента.
+        Returns:
+            None
+        """
 
-        @sio.event
-        def connect(sid, environ):
-            if not self.connected:
-                self.connected = True
-                self.uid = sid
+        self.server.listen(2)
+        self.cliSock, self.cliAddr = self.server.accept()
+        self.cliSock.send('Вы подключены!'.encode('utf-8'))
+        print(f'Игрок {self.cliSock} подключен')
 
-        @sio.event
-        async def get_message(sid, data):
-            print("message ", data)
+    def recieveFromClient(self):
+        """
+        Получает от клиента информацию.
+        Returns:
+            Данные, полученные от клиента.
+        """
+        data = ''
+        while True:
+            inp = self.cliSock.recv(1024)
+            inp = inp.decode('utf-8')
+            data += inp
 
-        @sio.event
-        def disconnect(sid):
-            self.connected = False
-            self.uid = ''
-
-        if __name__ == '__main__':
-            web.run_app(app)
-
-
-
-
-  #      sio.emit('my event', {'data': 'foobar'})
+            if not data:
+                break
+            return data
 
 class Client:
     """
-    Класс Клиента (игрока), отправляет ивенты на Сервер
-
+    Клиент (игрок), который будет принимать и посылать информацию на сервер.
     """
     def __init__(self):
+        self.client = socket.socket(
+            socket.AF_INET,
+            socket.SOCK_STREAM
+        )
+        self.client.settimeout(10)
+        self.client.connect(('localhost', 8910))
+        self.client.settimeout(None)
 
+    def recieveFromServer(self):
+        """
+        Получает от сервера информацию.
+        Returns:
+            Получанная с сервера информация.
+        """
+        while True:
+            data = self.client.recv(2048)
+            data = data.decode('utf-8')
+            return data
 
-        self.sio = socketio.AsyncClient()
+    def sendToServer(self, data):
+        """
+        Отправляет информацию на сервер.
+        Args:
+            data: отправляемая информация
 
-        @self.sio.event
-        async def connect(ip, port):
-            print('connection established')
+        Returns:
+            None
+        """
+        data = data.encode('utf-8')
+        self.client.send(data)
 
-
-        @self.sio.event
-        async def my_message(data):
-            print('message received with ', data)
-            await self.sio.emit('my response', {'response': 'my response'})
-
-        @self.sio.event
-        async def get_message(message):
-            print(message['message'])
-
-        @self.sio.event
-        async def disconnect(ip, port):
-            print('disconnected from server')
-
-    def connectToServer(self, ip, port):
-        self.sio.connect(f'http://{ip}:{port}')
-        self.sio.wait()
 
