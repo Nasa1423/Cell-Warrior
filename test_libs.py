@@ -23,7 +23,7 @@ class TestLibs(TestCase):
 
     def test_getState_outOfField(self):
         field = GameField(50, 50)
-        self.assertEqual(field.getState(50,50), None)
+        self.assertEqual(field.getState(50,50), 0)
 
     def test_has_interception_any(self):
         field = GameField(50, 50)
