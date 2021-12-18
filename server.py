@@ -48,9 +48,9 @@ class Server:
         Returns:
             None
         """
-        for player in self.players:
-            data = data.encode('utf-8')
-            player.send(data)
+        #for player in self.players:
+        data = data.encode('utf-8')
+        self.cliSock.send(data)
 
 class Client:
     """
@@ -87,5 +87,6 @@ class Client:
         """
         data = data.encode('utf-8')
         self.client.send(data)
+
 
 
