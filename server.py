@@ -25,7 +25,7 @@ class Server:
         self.cliSock.send('Вы подключены!'.encode('utf-8'))
         print(f'Игрок {self.cliSock} подключен')
 
-    def recieveFromClient(self):
+    def recieve(self):
         """
         Получает от клиента информацию.
         Returns:
@@ -41,6 +41,19 @@ class Server:
                 break
             return data
 
+    def send(self, data):
+        """
+        Отправляет информацию клиентам.
+        Args:
+            data: отправляемые данные
+
+        Returns:
+            None
+        """
+        data = data.encode('utf-8')
+        self.cliSocket.send(data)
+
+
 class Client:
     """
     Клиент (игрок), который будет принимать и посылать информацию на сервер.
@@ -54,7 +67,7 @@ class Client:
         self.client.connect(('localhost', 8910))
         self.client.settimeout(None)
 
-    def recieveFromServer(self):
+    def recieve(self):
         """
         Получает от сервера информацию.
         Returns:
@@ -65,7 +78,7 @@ class Client:
             data = data.decode('utf-8')
             return data
 
-    def sendToServer(self, data):
+    def send(self, data):
         """
         Отправляет информацию на сервер.
         Args:
